@@ -27,6 +27,15 @@ function componentOne(state) {
     }
   }
 
+  const clicks = flyd.stream();
+  const clickActions = flyd.map(evnt =>
+    ({
+      action: 'CHANGE_DEST',
+      destination: {x: evnt.pageX, y: evnt.pageY}
+    }),
+    clicks
+  );
+
   const keypresses = flyd.stream();
   const keypressActions = flyd.stream();
   flyd.on(evnt => {
@@ -52,11 +61,20 @@ function componentOne(state) {
     }
   }, keypresses)  
   
-  const actions = keypressActions;
+  const actions = flyd.merge(clickActions, keypressActions);
 
   function updateState(oldState, action) {
     let newState;
     switch (action.action) {
+      case 'CHANGE_DEST':
+        newState = {
+          player: {
+            destination: action.destination,
+            location: oldState.player.location
+          },
+          puppy: oldState.puppy
+        };
+        break;
       case 'SOUTH':
         newState = {
           player: {
@@ -158,7 +176,8 @@ function componentOne(state) {
   
   const setup = () => {
     document.body.addEventListener('keypress', keypresses);
-    setInterval(() => actions({action: 'UPDATE'}), 250);
+    document.body.addEventListener('click', clicks);
+    setInterval(() => actions({action: 'UPDATE'}), 20);
   };
   
   return {DOM: vdom, setup: setup};
