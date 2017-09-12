@@ -36,6 +36,9 @@ function componentOne(state) {
   const actions = flyd.merge(updateActions, clickActions)
 
   function updateState(oldState, action) {
+    if (oldState.win) {
+      return oldState;
+    }
     let newState = oldState;
     switch (action.action) {
       case 'SETUP':
