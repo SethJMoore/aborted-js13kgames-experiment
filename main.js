@@ -79,54 +79,6 @@ function componentOne(state) {
           puppy: oldState.puppy
         };
         break;
-      case 'SOUTH':
-        newState = {
-          player: {
-            destination: {
-              x: oldState.player.destination.x,
-              y: oldState.player.destination.y + 1
-            },
-            location: oldState.player.location
-          },
-          puppy: oldState.puppy
-        };
-        break;
-      case 'NORTH':
-        newState = {
-          player: {
-            destination: {
-              x: oldState.player.destination.x,
-              y: oldState.player.destination.y - 1
-            },
-            location: oldState.player.location
-          },
-          puppy: oldState.puppy
-        };
-        break;
-      case 'WEST':
-        newState = {
-          player: {
-            destination: {
-              x: oldState.player.destination.x - 1,
-              y: oldState.player.destination.y
-            },
-            location: oldState.player.location
-          },
-          puppy: oldState.puppy
-        };
-        break;
-      case 'EAST':
-        newState = {
-          player: {
-            destination: {
-              x: oldState.player.destination.x + 1,
-              y: oldState.player.destination.y
-            },
-            location: oldState.player.location
-          },
-          puppy: oldState.puppy
-        };
-        break;
       case 'UPDATE':
         newState = {
           player: {
