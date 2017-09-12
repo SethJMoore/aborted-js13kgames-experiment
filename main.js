@@ -68,30 +68,18 @@ function componentOne(state) {
                                         keypressActions));
 
   function updateState(oldState, action) {
-    let newState;
+    let newState = oldState;
     switch (action.action) {
       case 'CHANGE_DEST':
-        newState = {
-          player: {
-            destination: action.destination,
-            location: oldState.player.location
-          },
-          puppy: oldState.puppy
-        };
+        newState.player.destination = action.destination;
         break;
       case 'UPDATE':
-        newState = {
-          player: {
-            destination: oldState.player.destination,
-            location: moveToward(oldState.player.location, oldState.player.destination)
-          },
-          puppy: oldState.puppy
-        };
+        newState.player.location = moveToward(oldState.player.location,
+                                              oldState.player.destination)
         break;
       default:
         newState = oldState;
     }
-    newState.npcs = oldState.npcs;
     if (Math.abs(newState.player.location.x - newState.puppy.x) < 5 &&
         Math.abs(newState.player.location.y - newState.puppy.y) < 5 ) {
       newState.win = true;
