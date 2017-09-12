@@ -5,15 +5,24 @@ function componentOne(state) {
 
   state({
     player: {x: 0, y: 0},
-    puppy: {x: 50, y: 50},
+    puppy: randomFieldLocation(),
     npcs: (() => {
       let a = [];
       while (Math.random() < 0.95) {
-        a.push({x: Math.round(Math.random() * 100), y: Math.round(Math.random() * 100)});
+        let location = randomFieldLocation();
+        location.destination = randomFieldLocation();
+        a.push(location);
       }
       return a;
     })()
   });
+
+  function randomFieldLocation() {
+    return {
+      x: Math.round(Math.random() * 100),
+      y: Math.round(Math.random() * 100)
+    }
+  }
 
   const keypresses = flyd.stream();
   const keypressActions = flyd.stream();
