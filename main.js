@@ -88,7 +88,7 @@ function componentOne(state) {
   const vdom = flyd.map(newState => createVDom(newState), state);
 
   function createVDom(localState) {
-    return h('div#field.field', [
+    return h('div#field.field', {attrs: {style: 'height:' + window.innerHeight + 'px;'}}, [
       localState.win ? h('h1', 'You won!!!') :
         h('svg', {attrs: {width: '100%', height: '100%'}}, [
          createSVGWithClass(localState.player.location, 'player'),
