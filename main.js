@@ -12,9 +12,11 @@ function componentOne(state) {
     npcs: (() => {
       let a = [];
       while (Math.random() < 0.95) {
-        let location = randomFieldLocation();
-        location.destination = randomFieldLocation();
-        a.push(location);
+        let npc = {
+          location: randomFieldLocation(),
+          destination: randomFieldLocation()
+        };
+        a.push(npc);
       }
       return a;
     })()
@@ -75,7 +77,12 @@ function componentOne(state) {
         break;
       case 'UPDATE':
         newState.player.location = moveToward(oldState.player.location,
-                                              oldState.player.destination)
+                                              oldState.player.destination);
+        newState.npcs = oldState.npcs.map(el => ({
+          location: moveToward(el.location, el.destination),
+          destination: el.destination
+        })
+      );
         break;
       default:
         newState = oldState;
@@ -106,7 +113,8 @@ function componentOne(state) {
         h('svg', {attrs: {width: '100%', height: '100%'}}, [
          createSVGWithClass(localState.player.location, 'player'),
          createSVGWithClass(localState.puppy, 'puppy'),
-       ].concat(localState.npcs.map(npc => createSVGWithClass(npc, 'npc'))))
+       ].concat(localState.npcs.map(npc =>
+         createSVGWithClass(npc.location, 'npc'))))
     ]);
   }
   
