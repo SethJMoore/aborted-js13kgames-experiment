@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+}
+
+.player {
+  r: 5;
+  stroke: green;
+  'stroke-width': 2;
+  fill: red;
+}
+
+.puppy {
+  r: 5;
+  stroke: blue;
+  'stroke-width': 2;
+  fill: aliceblue;
+}

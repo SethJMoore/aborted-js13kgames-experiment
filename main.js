@@ -89,34 +89,20 @@ function componentOne(state) {
     return h('div.field', [
       localState.win ? h('h1', 'You won!!!') :
       h('svg', {attrs: {width: '100%', height: '100%'}}, [
-       createPlayerSVG(localState.player),
-       createPuppySVG(localState.puppy),
+       createSVGWithClass(localState.player, 'player'),
+       createSVGWithClass(localState.puppy, 'puppy'),
       ])
     ]);
   }
   
-  function createPlayerSVG(player) {
+  function createSVGWithClass(location, className) {
     return h('circle', {attrs: {
-      cx: player.x,
-      cy: player.y,
-      r: 5,
-      stroke: 'green',
-      'stroke-width': 2,
-      fill: 'red'
+      class: className,
+      cx: location.x,
+      cy: location.y
     }})
   }
   
-  function createPuppySVG(puppy) {
-    return h('circle', {attrs: {
-      cx: puppy.x,
-      cy: puppy.y,
-      r: 5,
-      stroke: 'blue',
-      'stroke-width': 2,
-      fill: 'purple'
-    }})
-  }
-
   const setup = () => {
     document.body.addEventListener('keypress', keypresses);
   };
