@@ -3,7 +3,17 @@ patch = snabbdom.init([snabbdom_attributes.attributesModule]);
 
 function componentOne(state) {
 
-  state({player: {x: 0, y: 0}, puppy: {x: 50, y: 50}});
+  state({
+    player: {x: 0, y: 0},
+    puppy: {x: 50, y: 50},
+    npcs: (() => {
+      let a = [];
+      while (Math.random() < 0.95) {
+        a.push({x: Math.round(Math.random() * 100), y: Math.round(Math.random() * 100)});
+      }
+      return a;
+    })()
+  });
 
   const keypresses = flyd.stream();
   const keypressActions = flyd.stream();
@@ -74,6 +84,7 @@ function componentOne(state) {
       default:
         newState = oldState;
     }
+    newState.npcs = oldState.npcs;
     if (Math.abs(newState.player.x - newState.puppy.x) < 5 && 
         Math.abs(newState.player.y - newState.puppy.y) < 5 ) {
       newState.win = true;
@@ -88,10 +99,10 @@ function componentOne(state) {
   function createVDom(localState) {
     return h('div.field', [
       localState.win ? h('h1', 'You won!!!') :
-      h('svg', {attrs: {width: '100%', height: '100%'}}, [
-       createSVGWithClass(localState.player, 'player'),
-       createSVGWithClass(localState.puppy, 'puppy'),
-      ])
+        h('svg', {attrs: {width: '100%', height: '100%'}}, [
+         createSVGWithClass(localState.player, 'player'),
+         createSVGWithClass(localState.puppy, 'puppy'),
+       ].concat(localState.npcs.map(npc => createSVGWithClass(npc, 'npc'))))
     ]);
   }
   

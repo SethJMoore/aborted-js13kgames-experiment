@@ -15,3 +15,10 @@ body {
   'stroke-width': 2;
   fill: aliceblue;
 }
+
+.npc {
+  r: 5;
+  stroke: red;
+  'stroke-width': 2;
+  fill: white;
+}
