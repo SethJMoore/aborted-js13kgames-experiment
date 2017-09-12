@@ -53,7 +53,10 @@ function componentOne(state) {
                                               oldState.player.destination);
         newState.npcs = oldState.npcs.map(el => ({
           location: moveToward(el.location, el.destination),
-          destination: el.destination
+          destination: (el.location.x === el.destination.x &&
+                        el.location.y === el.destination.y) ?
+                        randomFieldLocation() :
+                        el.destination
         })
       );
         break;
