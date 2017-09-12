@@ -38,36 +38,9 @@ function componentOne(state) {
     clicks
   );
 
-  const keypresses = flyd.stream();
-  const keypressActions = flyd.stream();
-  flyd.on(evnt => {
-    let action;
-    switch (evnt.code) {
-      case "KeyJ":
-        action = {action: 'SOUTH'};
-        break;
-      case "KeyK":
-        action = {action: 'NORTH'};
-        break;
-      case "KeyH":
-        action = {action: 'WEST'};
-        break;
-      case "KeyL":
-        action = {action: 'EAST'};
-        break;
-      default:
-        action = undefined;
-    }
-    if (action !== undefined) {
-      keypressActions(action);
-    }
-  }, keypresses)  
-
   const updateActions = flyd.stream();
   
-  const actions = flyd.merge(updateActions,
-                             flyd.merge(clickActions,
-                                        keypressActions));
+  const actions = flyd.merge(updateActions, clickActions)
 
   function updateState(oldState, action) {
     let newState = oldState;
@@ -127,7 +100,6 @@ function componentOne(state) {
   }
   
   const setup = () => {
-    document.body.addEventListener('keypress', keypresses);
     document.body.addEventListener('click', clicks);
     setInterval(() => updateActions({action: 'UPDATE'}), 20);
   };
