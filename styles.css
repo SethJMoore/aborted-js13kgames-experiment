@@ -22,3 +22,7 @@ body {
   'stroke-width': 2;
   fill: white;
 }
+
+.met {
+  fill: green;
+}

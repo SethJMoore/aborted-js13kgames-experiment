@@ -55,14 +55,21 @@ function componentOne(state) {
       case 'UPDATE':
         newState.player.location = moveToward(oldState.player.location,
                                               oldState.player.destination);
-        newState.npcs = oldState.npcs.map(el => ({
-          location: moveToward(el.location, el.destination),
-          destination: (el.location.x === el.destination.x &&
-                        el.location.y === el.destination.y) ?
-                        randomFieldLocation() :
-                        el.destination
-          })
-        );
+        newState.npcs = oldState.npcs.map(el => {
+          let newLoc = moveToward(el.location, el.destination);
+          return {
+            location: newLoc,
+            destination: (newLoc.x === el.destination.x &&
+                          newLoc.y === el.destination.y) ?
+                          randomFieldLocation() :
+                          el.destination,
+            metPlayer: el.metPlayer ? el.metPlayer :
+              (Math.abs(newLoc.x - newState.player.location.x) < 10 &&
+              Math.abs(newLoc.y - newState.player.location.y) < 10 ) ?
+              newState.player.location :
+              undefined
+          };
+        });
         if (Math.abs(newState.player.location.x - newState.puppy.x) < 5 &&
             Math.abs(newState.player.location.y - newState.puppy.y) < 5 ) {
           newState.win = true;
@@ -94,7 +101,7 @@ function componentOne(state) {
          createSVGWithClass(localState.player.location, 'player'),
          createSVGWithClass(localState.puppy, 'puppy'),
        ].concat(localState.npcs.map(npc =>
-         createSVGWithClass(npc.location, 'npc'))))
+         createSVGWithClass(npc.location, 'npc' + (npc.metPlayer ? ' met' : '')))))
     ]);
   }
   
