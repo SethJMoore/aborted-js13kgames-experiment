@@ -60,8 +60,12 @@ function componentOne(state) {
       keypressActions(action);
     }
   }, keypresses)  
+
+  const updateActions = flyd.stream();
   
-  const actions = flyd.merge(clickActions, keypressActions);
+  const actions = flyd.merge(updateActions,
+                             flyd.merge(clickActions,
+                                        keypressActions));
 
   function updateState(oldState, action) {
     let newState;
@@ -177,7 +181,7 @@ function componentOne(state) {
   const setup = () => {
     document.body.addEventListener('keypress', keypresses);
     document.body.addEventListener('click', clicks);
-    setInterval(() => actions({action: 'UPDATE'}), 20);
+    setInterval(() => updateActions({action: 'UPDATE'}), 20);
   };
   
   return {DOM: vdom, setup: setup};
