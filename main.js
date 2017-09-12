@@ -8,24 +8,14 @@ function componentOne(state) {
       location: {x: 0, y: 0},
       destination: {x: 0, y: 0}
     },
-    puppy: randomFieldLocation(),
-    npcs: (() => {
-      let a = [];
-      while (Math.random() < 0.95) {
-        let npc = {
-          location: randomFieldLocation(),
-          destination: randomFieldLocation()
-        };
-        a.push(npc);
-      }
-      return a;
-    })()
+    puppy: {x: 0, y: 0},
+    npcs: []
   });
 
   function randomFieldLocation() {
     return {
-      x: Math.round(Math.random() * 100),
-      y: Math.round(Math.random() * 100)
+      x: Math.round(Math.random() * document.getElementById('field').clientWidth),
+      y: Math.round(Math.random() * document.getElementById('field').clientHeight)
     }
   }
 
@@ -45,6 +35,20 @@ function componentOne(state) {
   function updateState(oldState, action) {
     let newState = oldState;
     switch (action.action) {
+      case 'SETUP':
+        newState.puppy = randomFieldLocation();
+        newState.npcs = (() => {
+          let a = [];
+          while (Math.random() < 0.95) {
+            let npc = {
+              location: randomFieldLocation(),
+              destination: randomFieldLocation()
+            };
+            a.push(npc);
+          }
+          return a;
+        })();
+        break;
       case 'CHANGE_DEST':
         newState.player.destination = action.destination;
         break;
@@ -57,15 +61,15 @@ function componentOne(state) {
                         el.location.y === el.destination.y) ?
                         randomFieldLocation() :
                         el.destination
-        })
-      );
+          })
+        );
+        if (Math.abs(newState.player.location.x - newState.puppy.x) < 5 &&
+            Math.abs(newState.player.location.y - newState.puppy.y) < 5 ) {
+          newState.win = true;
+        }
         break;
       default:
         newState = oldState;
-    }
-    if (Math.abs(newState.player.location.x - newState.puppy.x) < 5 &&
-        Math.abs(newState.player.location.y - newState.puppy.y) < 5 ) {
-      newState.win = true;
     }
     return newState;
   }
@@ -84,7 +88,7 @@ function componentOne(state) {
   const vdom = flyd.map(newState => createVDom(newState), state);
 
   function createVDom(localState) {
-    return h('div.field', [
+    return h('div#field.field', [
       localState.win ? h('h1', 'You won!!!') :
         h('svg', {attrs: {width: '100%', height: '100%'}}, [
          createSVGWithClass(localState.player.location, 'player'),
@@ -103,6 +107,7 @@ function componentOne(state) {
   }
   
   const setup = () => {
+    actions({action: 'SETUP'});
     document.body.addEventListener('click', clicks);
     setInterval(() => updateActions({action: 'UPDATE'}), 20);
   };
