@@ -8,7 +8,10 @@ function componentOne(state) {
       location: {x: 0, y: 0},
       destination: {x: 0, y: 0}
     },
-    puppy: {x: 0, y: 0},
+    puppy: {
+      location: {x: 0, y: 0},
+      destination: {x: 0, y: 0}
+    },
     npcs: []
   });
 
@@ -36,7 +39,8 @@ function componentOne(state) {
     let newState = oldState;
     switch (action.action) {
       case 'SETUP':
-        newState.puppy = randomFieldLocation();
+        newState.puppy.location =
+          newState.puppy.destination = randomFieldLocation();
         newState.npcs = (() => {
           let a = [];
           while (Math.random() < 0.95) {
@@ -55,8 +59,15 @@ function componentOne(state) {
       case 'UPDATE':
         newState.player.location = moveToward(oldState.player.location,
                                               oldState.player.destination);
+        newState.puppy.location = moveToward(oldState.puppy.location,
+                                              oldState.puppy.destination);
         newState.npcs = oldState.npcs.map(el => {
           let newLoc = moveToward(el.location, el.destination);
+          // Side effects in my map function? Tsk, tsk.
+          if (Math.abs(newLoc.x - newState.puppy.location.x) < 10 &&
+              Math.abs(newLoc.y - newState.puppy.location.y) < 10 ) {
+            newState.puppy.destination = el.metPlayer || oldState.puppy.destination;
+          }
           return {
             location: newLoc,
             destination: (newLoc.x === el.destination.x &&
@@ -65,13 +76,13 @@ function componentOne(state) {
                           el.destination,
             metPlayer: el.metPlayer ? el.metPlayer :
               (Math.abs(newLoc.x - newState.player.location.x) < 10 &&
-              Math.abs(newLoc.y - newState.player.location.y) < 10 ) ?
-              newState.player.location :
-              undefined
+               Math.abs(newLoc.y - newState.player.location.y) < 10 ) ?
+                newState.player.location :
+                undefined
           };
         });
-        if (Math.abs(newState.player.location.x - newState.puppy.x) < 5 &&
-            Math.abs(newState.player.location.y - newState.puppy.y) < 5 ) {
+        if (Math.abs(newState.player.location.x - newState.puppy.location.x) < 5 &&
+            Math.abs(newState.player.location.y - newState.puppy.location.y) < 5 ) {
           newState.win = true;
         }
         break;
@@ -99,7 +110,7 @@ function componentOne(state) {
       localState.win ? h('h1', 'You won!!!') :
         h('svg', {attrs: {width: '100%', height: '100%'}}, [
          createSVGWithClass(localState.player.location, 'player'),
-         createSVGWithClass(localState.puppy, 'puppy'),
+         createSVGWithClass(localState.puppy.location, 'puppy'),
        ].concat(localState.npcs.map(npc =>
          createSVGWithClass(npc.location, 'npc' + (npc.metPlayer ? ' met' : '')))))
     ]);
