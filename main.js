@@ -4,7 +4,10 @@ patch = snabbdom.init([snabbdom_attributes.attributesModule]);
 function componentOne(state) {
 
   state({
-    player: {x: 0, y: 0},
+    player: {
+      location: {x: 0, y: 0},
+      destination: {x: 0, y: 0}
+    },
     puppy: randomFieldLocation(),
     npcs: (() => {
       let a = [];
@@ -57,8 +60,11 @@ function componentOne(state) {
       case 'SOUTH':
         newState = {
           player: {
-            x: oldState.player.x,
-            y: oldState.player.y + 1
+            destination: {
+              x: oldState.player.destination.x,
+              y: oldState.player.destination.y + 1
+            },
+            location: oldState.player.location
           },
           puppy: oldState.puppy
         };
@@ -66,8 +72,11 @@ function componentOne(state) {
       case 'NORTH':
         newState = {
           player: {
-            x: oldState.player.x,
-            y: oldState.player.y - 1
+            destination: {
+              x: oldState.player.destination.x,
+              y: oldState.player.destination.y - 1
+            },
+            location: oldState.player.location
           },
           puppy: oldState.puppy
         };
@@ -75,8 +84,11 @@ function componentOne(state) {
       case 'WEST':
         newState = {
           player: {
-            x: oldState.player.x - 1,
-            y: oldState.player.y
+            destination: {
+              x: oldState.player.destination.x - 1,
+              y: oldState.player.destination.y
+            },
+            location: oldState.player.location
           },
           puppy: oldState.puppy
         };
@@ -84,8 +96,20 @@ function componentOne(state) {
       case 'EAST':
         newState = {
           player: {
-            x: oldState.player.x + 1,
-            y: oldState.player.y
+            destination: {
+              x: oldState.player.destination.x + 1,
+              y: oldState.player.destination.y
+            },
+            location: oldState.player.location
+          },
+          puppy: oldState.puppy
+        };
+        break;
+      case 'UPDATE':
+        newState = {
+          player: {
+            destination: oldState.player.destination,
+            location: moveToward(oldState.player.location, oldState.player.destination)
           },
           puppy: oldState.puppy
         };
@@ -94,11 +118,20 @@ function componentOne(state) {
         newState = oldState;
     }
     newState.npcs = oldState.npcs;
-    if (Math.abs(newState.player.x - newState.puppy.x) < 5 && 
-        Math.abs(newState.player.y - newState.puppy.y) < 5 ) {
+    if (Math.abs(newState.player.location.x - newState.puppy.x) < 5 &&
+        Math.abs(newState.player.location.y - newState.puppy.y) < 5 ) {
       newState.win = true;
     }
     return newState;
+  }
+
+  function moveToward(loc, dest) {
+    let xDirection = dest.x - loc.x;
+    let yDirection = dest.y - loc.y;
+    return {
+      x: xDirection === 0 ? loc.x : (xDirection > 0 ? loc.x + 1 : loc.x - 1),
+      y: yDirection === 0 ? loc.y : (yDirection > 0 ? loc.y + 1 : loc.y - 1)
+    }
   }
 
   flyd.on(action => state(updateState(state(), action)), actions);
@@ -109,7 +142,7 @@ function componentOne(state) {
     return h('div.field', [
       localState.win ? h('h1', 'You won!!!') :
         h('svg', {attrs: {width: '100%', height: '100%'}}, [
-         createSVGWithClass(localState.player, 'player'),
+         createSVGWithClass(localState.player.location, 'player'),
          createSVGWithClass(localState.puppy, 'puppy'),
        ].concat(localState.npcs.map(npc => createSVGWithClass(npc, 'npc'))))
     ]);
@@ -125,6 +158,7 @@ function componentOne(state) {
   
   const setup = () => {
     document.body.addEventListener('keypress', keypresses);
+    setInterval(() => actions({action: 'UPDATE'}), 250);
   };
   
   return {DOM: vdom, setup: setup};
