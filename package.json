@@ -1,0 +1,14 @@
+{
+  "name": "aborted-js13kgames-experiment",
+  "version": "0.0.0",
+  "main": " ",
+  "author": "Seth J. Moore <seth@sethjmoore.com>",
+  "license": "MIT",
+  "dependencies": {
+    "flyd": "^0.2.4",
+    "snabbdom": "^0.7.0"
+  },
+  "devDependencies": {
+    "browserify": "^14.4.0"
+  }
+}
