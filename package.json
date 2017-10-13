@@ -10,5 +10,8 @@
   },
   "devDependencies": {
     "browserify": "^14.4.0"
+  },
+  "scripts": {
+    "build": "browserify main.js -o bundle.js"
   }
 }

@@ -1,5 +1,7 @@
-const h = snabbdom.h;
-patch = snabbdom.init([snabbdom_attributes.attributesModule]);
+const flyd = require("flyd");
+const snabbdom = require("snabbdom");
+const h = require("snabbdom/h").default;
+const patch = snabbdom.init([require("snabbdom/modules/attributes").default]);
 
 function componentOne(state) {
 
